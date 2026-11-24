@@ -240,9 +240,9 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--soft);padding:24px 0
     <h2 data-reveal>Watch</h2>
     <p class="intro-v" data-reveal>The videos are in Serbian. To watch with English subtitles, click CC on YouTube, then Settings, Subtitles, and choose English or Auto-translate to English.</p>
     <div class="video" data-reveal>
-      <iframe id="yt" src="https://www.youtube.com/embed/X74WvbcI0sY?enablejsapi=1&amp;rel=0&amp;cc_load_policy=1&amp;cc_lang_pref=en&amp;hl=en" title="Victims of the canopy collapse: Love, memories and pain" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe id="yt" src="https://www.youtube.com/embed/X74WvbcI0sY?enablejsapi=1&amp;rel=0" title="Victims of the canopy collapse: Love, memories and pain" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-    <p class="video-cap" data-reveal>Victims of the canopy collapse: Love, memories and pain</p>
+    <p class="video-cap" data-reveal>Victims of the canopy collapse: Love, memories and pain · <a href="https://www.youtube.com/watch?v=X74WvbcI0sY" target="_blank" rel="noopener">Watch on YouTube with English subtitles</a></p>
 
     <h3 data-reveal>More from BBC News Serbian</h3>
     <ul class="vlist">
@@ -310,28 +310,28 @@ onScroll();
 
 // Kiosk mode for the festival stand: open the page with ?kiosk at the end of the address.
 // The page scrolls slowly on its own, holds at the top and bottom, then starts again.
-// Any scroll, click, key press or video playback pauses it; it resumes 20 seconds after the last interaction.
+// Any scroll, click or key press pauses it for 10 seconds; it also stops while the video is playing.
 if (kiosk) {
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   scrollTo(0, 0);
   const fade = $(".kiosk-fade");
   kioskQr.hidden = false; fade.hidden = false;
 
-  const SPEED = 45;      // pixels per second
-  const HOLD = 8000;     // pause at the top and at the bottom, ms
-  const IDLE = 20000;    // resume after this long without interaction, ms
+  const SPEED = 90;      // pixels per second
+  const HOLD = 4000;     // pause at the top and at the bottom, ms
+  const IDLE = 10000;    // resume after this long without interaction, ms
   let pos = 0, last = null, holdUntil = performance.now() + HOLD, idleUntil = 0, bottomAt = null, resetting = false, playing = false;
 
   const pause = () => { idleUntil = performance.now() + IDLE; };
   ["wheel", "touchstart", "keydown", "mousedown"].forEach(ev => addEventListener(ev, pause, {passive: true}));
-  addEventListener("blur", pause); // fires when someone clicks into the video
 
   const tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   document.head.append(tag);
   window.onYouTubeIframeAPIReady = () => new YT.Player("yt", {events: {onStateChange: e => {
+    const was = playing;
     playing = e.data === 1 || e.data === 3;
-    if (!playing) pause();
+    if (was && !playing) pause();
   }}});
 
   function step(t) {
