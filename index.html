@@ -117,6 +117,18 @@ section p{margin:0 0 1.1em;text-shadow:0 1px 16px rgba(0,0,0,.55)}
 .vlist a::after{content:"→";color:var(--red);filter:brightness(1.5);transition:transform .35s ease}
 .vlist li:hover a::after{transform:translateX(6px)}
 
+.video{margin:30px 0 14px;aspect-ratio:16/9;background:#000}
+.video iframe{display:block;width:100%;height:100%;border:0}
+.video-cap{font-family:var(--sans);font-size:.95rem;color:var(--soft);margin:0 0 50px}
+h3{font-family:var(--sans);font-weight:700;font-size:1.3rem;margin:0}
+
+.kiosk-qr{position:fixed;right:28px;bottom:28px;z-index:15;margin:0;background:#fff;padding:12px 12px 8px;text-align:center;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;pointer-events:none}
+.kiosk-qr.show{opacity:1;transform:none}
+.kiosk-qr img{width:130px;height:130px;object-fit:contain}
+.kiosk-qr figcaption{font-family:var(--sans);font-weight:700;font-size:.8rem;color:var(--red);margin-top:4px}
+.kiosk-fade{position:fixed;inset:0;z-index:20;background:#0b0b0b;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
+.kiosk-fade.on{opacity:1}
+
 footer{font-family:var(--sans);font-size:.85rem;color:var(--soft);padding:24px 0 50px;background:rgba(11,11,11,.62)}
 
 @media (max-width:860px){
@@ -140,6 +152,12 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--soft);padding:24px 0
 <body>
 
 <div class="progress"></div>
+
+<figure class="kiosk-qr" hidden aria-hidden="true">
+  <img src="qr%20git.png" alt="">
+  <figcaption>Scan to open this page</figcaption>
+</figure>
+<div class="kiosk-fade" hidden aria-hidden="true"></div>
 
 <div class="bgs" aria-hidden="true">
   <div class="drift">
@@ -219,14 +237,19 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--soft);padding:24px 0
 
 <section id="watch">
   <div class="wrap col">
-    <h2 data-reveal>More to watch</h2>
-    <p class="intro-v" data-reveal>Video reporting by BBC News Serbian on the canopy collapse and what followed. The videos are in Serbian; to watch with English subtitles, click CC on YouTube, then Settings, Subtitles, and choose English or Auto-translate to English.</p>
+    <h2 data-reveal>Watch</h2>
+    <p class="intro-v" data-reveal>The videos are in Serbian. To watch with English subtitles, click CC on YouTube, then Settings, Subtitles, and choose English or Auto-translate to English.</p>
+    <div class="video" data-reveal>
+      <iframe id="yt" src="https://www.youtube.com/embed/X74WvbcI0sY?enablejsapi=1&amp;rel=0&amp;cc_load_policy=1&amp;cc_lang_pref=en&amp;hl=en" title="Victims of the canopy collapse: Love, memories and pain" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <p class="video-cap" data-reveal>Victims of the canopy collapse: Love, memories and pain</p>
+
+    <h3 data-reveal>More from BBC News Serbian</h3>
     <ul class="vlist">
-      <li data-reveal style="--d:.05s"><a href="https://www.youtube.com/watch?v=X74WvbcI0sY" target="_blank" rel="noopener"><span class="num">01</span><span>Victims of the canopy collapse: Love, memories and pain</span></a></li>
-      <li data-reveal style="--d:.15s"><a href="https://www.youtube.com/watch?v=rAxiIeu2xRM" target="_blank" rel="noopener"><span class="num">02</span><span>Canopy collapse in Novi Sad: A year of turmoil in Serbia</span></a></li>
-      <li data-reveal style="--d:.25s"><a href="https://www.youtube.com/watch?v=g_H_Bl_5S0A" target="_blank" rel="noopener"><span class="num">03</span><span>The attack on drama students and the start of the student blockades</span></a></li>
-      <li data-reveal style="--d:.35s"><a href="https://www.youtube.com/watch?v=CFhn5E5gDmg" target="_blank" rel="noopener"><span class="num">04</span><span>He witnessed the canopy collapse, then joined the student movement that brought down the government</span></a></li>
-      <li data-reveal style="--d:.45s"><a href="https://www.youtube.com/watch?v=eexy6LjbCAE" target="_blank" rel="noopener"><span class="num">05</span><span>“Is there justice?” Anđela Ruman's sister, two years after the collapse</span></a></li>
+      <li data-reveal style="--d:.05s"><a href="https://www.youtube.com/watch?v=rAxiIeu2xRM" target="_blank" rel="noopener"><span class="num">01</span><span>Canopy collapse in Novi Sad: A year of turmoil in Serbia</span></a></li>
+      <li data-reveal style="--d:.15s"><a href="https://www.youtube.com/watch?v=g_H_Bl_5S0A" target="_blank" rel="noopener"><span class="num">02</span><span>The attack on drama students and the start of the student blockades</span></a></li>
+      <li data-reveal style="--d:.25s"><a href="https://www.youtube.com/watch?v=CFhn5E5gDmg" target="_blank" rel="noopener"><span class="num">03</span><span>He witnessed the canopy collapse, then joined the student movement that brought down the government</span></a></li>
+      <li data-reveal style="--d:.35s"><a href="https://www.youtube.com/watch?v=eexy6LjbCAE" target="_blank" rel="noopener"><span class="num">04</span><span>“Is there justice?” Anđela Ruman's sister, two years after the collapse</span></a></li>
     </ul>
   </div>
 </section>
@@ -259,6 +282,8 @@ const words = [...qp.querySelectorAll(".q-word")];
 const coverImg = $(".cover img");
 const dark = $(".dark"), b2 = $(".bg2"), b3 = $(".bg3"), bar = $(".progress");
 let ticking = false;
+const kiosk = new URLSearchParams(location.search).has("kiosk");
+const kioskQr = kiosk ? $(".kiosk-qr") : null;
 function onScroll() {
   const y = scrollY, vh = innerHeight;
   const max = document.documentElement.scrollHeight - vh;
@@ -266,6 +291,7 @@ function onScroll() {
   b2.style.opacity = clamp((y - vh * .5) / (vh * .7));
   b3.style.opacity = clamp((y - vh * 1.2) / (vh * .8));
   bar.style.width = (max > 0 ? y / max * 100 : 0) + "%";
+  if (kioskQr) kioskQr.classList.toggle("show", y > vh * .6);
   if (reduce) { words.forEach(w => w.classList.add("on")); }
   else {
     const r = quote.getBoundingClientRect();
@@ -281,6 +307,59 @@ function onScroll() {
 addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive: true});
 addEventListener("resize", onScroll);
 onScroll();
+
+// Kiosk mode for the festival stand: open the page with ?kiosk at the end of the address.
+// The page scrolls slowly on its own, holds at the top and bottom, then starts again.
+// Any scroll, click, key press or video playback pauses it; it resumes 20 seconds after the last interaction.
+if (kiosk) {
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  scrollTo(0, 0);
+  const fade = $(".kiosk-fade");
+  kioskQr.hidden = false; fade.hidden = false;
+
+  const SPEED = 45;      // pixels per second
+  const HOLD = 8000;     // pause at the top and at the bottom, ms
+  const IDLE = 20000;    // resume after this long without interaction, ms
+  let pos = 0, last = null, holdUntil = performance.now() + HOLD, idleUntil = 0, bottomAt = null, resetting = false, playing = false;
+
+  const pause = () => { idleUntil = performance.now() + IDLE; };
+  ["wheel", "touchstart", "keydown", "mousedown"].forEach(ev => addEventListener(ev, pause, {passive: true}));
+  addEventListener("blur", pause); // fires when someone clicks into the video
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.append(tag);
+  window.onYouTubeIframeAPIReady = () => new YT.Player("yt", {events: {onStateChange: e => {
+    playing = e.data === 1 || e.data === 3;
+    if (!playing) pause();
+  }}});
+
+  function step(t) {
+    if (last === null) last = t;
+    const dt = Math.min(t - last, 100) / 1000; last = t;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (resetting) {
+      // wait for the fade
+    } else if (playing || t < idleUntil || t < holdUntil || document.hidden) {
+      pos = scrollY; bottomAt = null;
+    } else if (pos >= max - 1) {
+      if (bottomAt === null) bottomAt = t;
+      if (t - bottomAt > HOLD) {
+        resetting = true; fade.classList.add("on");
+        setTimeout(() => {
+          scrollTo(0, 0); pos = 0; bottomAt = null;
+          fade.classList.remove("on"); resetting = false;
+          holdUntil = performance.now() + HOLD;
+        }, 1300);
+      }
+    } else {
+      pos = Math.min(max, pos + SPEED * dt);
+      scrollTo(0, pos);
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 </script>
 </body>
 </html>
