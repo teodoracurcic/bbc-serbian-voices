@@ -4,7 +4,7 @@ Promo page for *Oni koji su otišli i oni koji ostaju* (Those Who Left and Those
 
 The project won the Digital Storytelling and Social Media Award at VOICES 2026, the European Festival of Journalism and Media Freedom in Thessaloniki. This page was made for the festival's Awardee Corner, 28 November 2026.
 
-Live page: https://teodoracurcic.github.io/bbc-serbian-voices/
+Live page: [https://teodoracurcic.github.io/bbc-serbian-voices/](https://teodoracurcic.github.io/bbc-serbian-voices/?kiosk)
 
 Full story (in Serbian): https://www.bbc.com/serbian/lat/extra/i6c5d73dnq/zrtve-pada-nadstresnice
 
